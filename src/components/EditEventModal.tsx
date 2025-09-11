@@ -79,7 +79,7 @@ export default function EditEventModal({ isOpen, onClose, event, onSave }: EditE
     try {
       const updatedEvent = {
         ...formData,
-        max_attendees: formData.maxAttendees ? parseInt(formData.maxAttendees) : null,
+        max_attendees: formData.maxAttendees ? parseInt(formData.maxAttendees) : undefined,
         price: parseInt(formData.price) || 0,
         is_online: formData.isOnline,
         is_public: formData.isPublic,

@@ -6,11 +6,32 @@ import { EventGrid } from '@/src/components/EventGrid';
 import { Footer } from '@/src/components/Footer';
 import { Search, Filter } from 'lucide-react';
 
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  category: string;
+  attendee_count: number;
+  max_attendees?: number;
+  image?: string;
+  price: number;
+  currency: string;
+  is_online: boolean;
+  is_public: boolean;
+  requires_approval: boolean;
+  created_at: string;
+  updated_at: string;
+  creator_id: string;
+}
+
 export default function EventsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [loading, setLoading] = useState(true);
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<Event[]>([]);
 
   const categories = ['All', 'Technology', 'Design', 'Business', 'Education', 'Health', 'Entertainment'];
 
@@ -39,7 +60,22 @@ export default function EventsPage() {
                          event.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === '' || selectedCategory === 'All' || event.category === selectedCategory;
     return matchesSearch && matchesCategory;
-  });
+  }).map(event => ({
+    id: event.id,
+    title: event.title,
+    description: event.description,
+    date: new Date(event.date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }),
+    time: event.time,
+    location: event.location,
+    attendees: event.attendee_count || 0,
+    maxAttendees: event.max_attendees,
+    image: event.image,
+    category: event.category
+  }));
 
   return (
     <div className="min-h-screen flex flex-col">
