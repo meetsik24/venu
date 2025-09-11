@@ -74,15 +74,15 @@ export default function RSVPModal({ isOpen, onClose, event, eventUrl }: RSVPModa
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-4 z-50">
       <div className="bg-background rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">RSVP for Event</h2>
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold">RSVP for Event</h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-muted rounded-full transition-colors"
+              className="p-2 hover:bg-muted rounded-full transition-colors flex-shrink-0"
             >
               <X className="w-5 h-5" />
             </button>
@@ -115,8 +115,8 @@ export default function RSVPModal({ isOpen, onClose, event, eventUrl }: RSVPModa
 
           {success ? (
             <div className="text-center py-8">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-green-900/20 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-500 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
@@ -130,7 +130,7 @@ export default function RSVPModal({ isOpen, onClose, event, eventUrl }: RSVPModa
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-2">
                   Full Name *
@@ -209,18 +209,18 @@ export default function RSVPModal({ isOpen, onClose, event, eventUrl }: RSVPModa
                 />
               </div>
 
-              <div className="flex gap-3 pt-4">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="minimal-button-outline flex-1"
+                  className="minimal-button-outline w-full sm:flex-1 order-2 sm:order-1"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="minimal-button-primary flex-1"
+                  className="minimal-button-primary w-full sm:flex-1 order-1 sm:order-2"
                 >
                   {loading ? 'RSVPing...' : 'Confirm RSVP'}
                 </button>

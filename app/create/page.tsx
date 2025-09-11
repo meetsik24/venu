@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Header from '@/src/components/Header';
 import { Calendar, MapPin, Users, Clock, Plus, Share2, CheckCircle, Copy } from 'lucide-react';
 import { useAuth } from '@/src/contexts/AuthContext';
+import NotificationModal from '@/src/components/NotificationModal';
 
 export default function CreateEventPage() {
   const router = useRouter();
@@ -20,6 +21,18 @@ export default function CreateEventPage() {
   });
   const [createdEvent, setCreatedEvent] = useState<any>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [notification, setNotification] = useState<{
+    isOpen: boolean;
+    type: 'success' | 'error' | 'warning' | 'info';
+    title: string;
+    message: string;
+    action?: { label: string; onClick: () => void };
+  }>({
+    isOpen: false,
+    type: 'info',
+    title: '',
+    message: ''
+  });
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -68,15 +81,25 @@ export default function CreateEventPage() {
           category: '',
           maxAttendees: ''
         });
-      } else {
-        const error = await response.json();
-        console.error('Error creating event:', error);
-        alert('Failed to create event: ' + error.error);
-      }
-    } catch (error) {
-      console.error('Error creating event:', error);
-      alert('Failed to create event. Please try again.');
-    }
+             } else {
+               const error = await response.json();
+               console.error('Error creating event:', error);
+               setNotification({
+                 isOpen: true,
+                 type: 'error',
+                 title: 'Creation Failed',
+                 message: 'Failed to create event: ' + error.error
+               });
+             }
+           } catch (error) {
+             console.error('Error creating event:', error);
+             setNotification({
+               isOpen: true,
+               type: 'error',
+               title: 'Creation Failed',
+               message: 'Failed to create event. Please try again.'
+             });
+           }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -86,13 +109,18 @@ export default function CreateEventPage() {
   });
 };
 
-const copyEventLink = () => {
-  if (createdEvent) {
-    const eventUrl = `${window.location.origin}/events/${createdEvent.id}`;
-    navigator.clipboard.writeText(eventUrl);
-    alert('Event link copied to clipboard!');
-  }
-};
+  const copyEventLink = () => {
+    if (createdEvent) {
+      const eventUrl = `${window.location.origin}/events/${createdEvent.id}`;
+      navigator.clipboard.writeText(eventUrl);
+      setNotification({
+        isOpen: true,
+        type: 'success',
+        title: 'Link Copied',
+        message: 'Event link has been copied to your clipboard!'
+      });
+    }
+  };
 
 const createAnotherEvent = () => {
   setShowSuccess(false);
@@ -325,7 +353,17 @@ const createAnotherEvent = () => {
             </div>
           </div>
         </div>
-      )}
-    </div>
-  );
-}
+             )}
+
+             {/* Notification Modal */}
+             <NotificationModal
+               isOpen={notification.isOpen}
+               onClose={() => setNotification(prev => ({ ...prev, isOpen: false }))}
+               type={notification.type}
+               title={notification.title}
+               message={notification.message}
+               action={notification.action}
+             />
+           </div>
+         );
+       }

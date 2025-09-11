@@ -11,6 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { generateEventThumbnail } from '@/lib/eventImages';
+import EditEventModal from '@/src/components/EditEventModal';
+import NotificationModal from '@/src/components/NotificationModal';
 
 interface Event {
   id: string;
@@ -43,6 +45,20 @@ export default function DashboardPage() {
     totalAttendees: 0,
     totalRevenue: 0,
     upcomingEvents: 0
+  });
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [notification, setNotification] = useState<{
+    isOpen: boolean;
+    type: 'success' | 'error' | 'warning' | 'info';
+    title: string;
+    message: string;
+    action?: { label: string; onClick: () => void };
+  }>({
+    isOpen: false,
+    type: 'info',
+    title: '',
+    message: ''
   });
 
   useEffect(() => {
@@ -92,27 +108,52 @@ export default function DashboardPage() {
   }, [user]);
 
   const handleDeleteEvent = async (eventId: string) => {
-    if (!confirm('Are you sure you want to delete this event?')) return;
+    const eventToDelete = events.find(e => e.id === eventId);
     
-    try {
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch(`/api/events/${eventId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
+    setNotification({
+      isOpen: true,
+      type: 'warning',
+      title: 'Delete Event',
+      message: `Are you sure you want to delete "${eventToDelete?.title}"? This action cannot be undone.`,
+      action: {
+        label: 'Delete',
+        onClick: async () => {
+          try {
+            const token = localStorage.getItem('auth_token');
+            const response = await fetch(`/api/events/${eventId}`, {
+              method: 'DELETE',
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            });
+            
+            if (response.ok) {
+              setEvents(events.filter(event => event.id !== eventId));
+              setStats(prev => ({
+                ...prev,
+                totalEvents: prev.totalEvents - 1
+              }));
+              setNotification({
+                isOpen: true,
+                type: 'success',
+                title: 'Event Deleted',
+                message: 'The event has been successfully deleted.'
+              });
+            } else {
+              throw new Error('Failed to delete event');
+            }
+          } catch (error) {
+            console.error('Error deleting event:', error);
+            setNotification({
+              isOpen: true,
+              type: 'error',
+              title: 'Delete Failed',
+              message: 'Failed to delete the event. Please try again.'
+            });
+          }
         }
-      });
-      
-      if (response.ok) {
-        setEvents(events.filter(event => event.id !== eventId));
-        setStats(prev => ({
-          ...prev,
-          totalEvents: prev.totalEvents - 1
-        }));
       }
-    } catch (error) {
-      console.error('Error deleting event:', error);
-    }
+    });
   };
 
   const handleViewEvent = (eventId: string) => {
@@ -120,7 +161,50 @@ export default function DashboardPage() {
   };
 
   const handleEditEvent = (eventId: string) => {
-    router.push(`/events/${eventId}/edit`);
+    const event = events.find(e => e.id === eventId);
+    if (event) {
+      setSelectedEvent(event);
+      setEditModalOpen(true);
+    }
+  };
+
+  const handleSaveEvent = async (updatedEvent: Partial<Event>) => {
+    if (!selectedEvent) return;
+
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch(`/api/events/${selectedEvent.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedEvent)
+      });
+
+      if (response.ok) {
+        const updated = await response.json();
+        setEvents(events.map(event => 
+          event.id === selectedEvent.id ? { ...event, ...updated.event } : event
+        ));
+        setNotification({
+          isOpen: true,
+          type: 'success',
+          title: 'Event Updated',
+          message: 'The event has been successfully updated.'
+        });
+      } else {
+        throw new Error('Failed to update event');
+      }
+    } catch (error) {
+      console.error('Error updating event:', error);
+      setNotification({
+        isOpen: true,
+        type: 'error',
+        title: 'Update Failed',
+        message: 'Failed to update the event. Please try again.'
+      });
+    }
   };
 
   const handleViewAttendees = (eventId: string) => {
@@ -130,7 +214,12 @@ export default function DashboardPage() {
   const copyEventLink = (eventId: string) => {
     const eventUrl = `${window.location.origin}/events/${eventId}`;
     navigator.clipboard.writeText(eventUrl);
-    alert('Event link copied to clipboard!');
+    setNotification({
+      isOpen: true,
+      type: 'success',
+      title: 'Link Copied',
+      message: 'Event link has been copied to your clipboard!'
+    });
   };
 
   if (authLoading || loading) {
@@ -359,6 +448,27 @@ export default function DashboardPage() {
       </main>
 
       <Footer />
+
+      {/* Edit Event Modal */}
+      <EditEventModal
+        isOpen={editModalOpen}
+        onClose={() => {
+          setEditModalOpen(false);
+          setSelectedEvent(null);
+        }}
+        event={selectedEvent}
+        onSave={handleSaveEvent}
+      />
+
+      {/* Notification Modal */}
+      <NotificationModal
+        isOpen={notification.isOpen}
+        onClose={() => setNotification(prev => ({ ...prev, isOpen: false }))}
+        type={notification.type}
+        title={notification.title}
+        message={notification.message}
+        action={notification.action}
+      />
     </div>
   );
 }
