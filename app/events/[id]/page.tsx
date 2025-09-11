@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { Calendar, MapPin, Clock, User, ArrowLeft } from 'lucide-react';
+import { Calendar, MapPin, Clock, User, ArrowLeft, Share2, Users } from 'lucide-react';
 import Header from '@/src/components/Header';
 import { Footer } from '@/src/components/Footer';
+import RSVPModal from '@/src/components/RSVPModal';
 
 export default function EventDetailPage() {
   const params = useParams();
@@ -13,17 +14,26 @@ export default function EventDetailPage() {
   const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isRSVPModalOpen, setIsRSVPModalOpen] = useState(false);
+  const [eventUrl, setEventUrl] = useState('');
 
   useEffect(() => {
     async function loadEvent() {
       try {
-        const response = await fetch(`/api/events/${id}`);
-        if (response.ok) {
-          const data = await response.json();
-          setEvent(data.event);
-        } else {
-          setError('Event not found');
+        // Always try to get from the events list API first
+        const eventsResponse = await fetch('/api/events');
+        if (eventsResponse.ok) {
+          const eventsData = await eventsResponse.json();
+          const foundEvent = eventsData.events.find((e: any) => e.id === id);
+          if (foundEvent) {
+            setEvent(foundEvent);
+            setLoading(false);
+            return;
+          }
         }
+        
+        // If not found, show error
+        setError('Event not found');
       } catch (error) {
         console.error('Failed to load event:', error);
         setError('Failed to load event');
@@ -33,6 +43,12 @@ export default function EventDetailPage() {
     }
     
     loadEvent();
+  }, [id]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setEventUrl(`${window.location.origin}/events/${id}`);
+    }
   }, [id]);
 
   if (loading) {
@@ -180,6 +196,18 @@ export default function EventDetailPage() {
                       </p>
                     </div>
                   </div>
+
+                  {event.max_attendees && (
+                    <div className="flex items-start space-x-3">
+                      <Users className="w-5 h-5 text-muted-foreground mt-0.5" />
+                      <div>
+                        <p className="font-medium">Attendees</p>
+                        <p className="text-sm text-muted-foreground">
+                          {event.attendee_count || 0} of {event.max_attendees} spots taken
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -214,15 +242,27 @@ export default function EventDetailPage() {
                       </p>
                     )}
                     <button
-                      className="w-full minimal-button-primary"
-                      disabled={event.maxAttendees && event.attendeeCount >= event.maxAttendees}
+                      onClick={() => setIsRSVPModalOpen(true)}
+                      className="w-full minimal-button-primary mb-3"
+                      disabled={event.maxAttendees && (event.attendee_count || 0) >= event.maxAttendees}
                     >
-                      {event.maxAttendees && event.attendeeCount >= event.maxAttendees 
+                      {event.maxAttendees && (event.attendee_count || 0) >= event.maxAttendees 
                         ? 'Sold Out' 
                         : isFree 
-                          ? 'Reserve Spot' 
+                          ? 'RSVP Now' 
                           : 'Get Ticket'
                       }
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(eventUrl);
+                        alert('Event link copied to clipboard!');
+                      }}
+                      className="w-full minimal-button-outline flex items-center justify-center gap-2"
+                    >
+                      <Share2 className="w-4 h-4" />
+                      Share Event
                     </button>
                   </div>
                 </div>
@@ -233,6 +273,14 @@ export default function EventDetailPage() {
       </div>
       
       <Footer />
+      
+      {/* RSVP Modal */}
+      <RSVPModal
+        isOpen={isRSVPModalOpen}
+        onClose={() => setIsRSVPModalOpen(false)}
+        event={event}
+        eventUrl={eventUrl}
+      />
     </div>
   );
 }

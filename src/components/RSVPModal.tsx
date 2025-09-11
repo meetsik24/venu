@@ -1,301 +1,234 @@
 'use client';
 
 import { useState } from 'react';
-import { X, CheckCircle } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import TicketConfirmation from './TicketConfirmation';
-import { useEventStore, type Event } from '../store/eventStore';
+import { X, Calendar, MapPin, Users, Clock } from 'lucide-react';
 
 interface RSVPModalProps {
   isOpen: boolean;
   onClose: () => void;
-  event: Event;
-  ticketId: string;
+  event: any;
+  eventUrl: string;
 }
 
-interface FormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  quantity: number;
-}
-
-export default function RSVPModal({ isOpen, onClose, event, ticketId }: RSVPModalProps) {
-  const [step, setStep] = useState<'form' | 'payment' | 'confirmation'>('form');
-  const [formData, setFormData] = useState<FormData>({
-    firstName: '',
-    lastName: '',
+export default function RSVPModal({ isOpen, onClose, event, eventUrl }: RSVPModalProps) {
+  const [formData, setFormData] = useState({
+    name: '',
     email: '',
     phone: '',
-    quantity: 1,
+    notes: '',
+    ticketCount: 1
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [ticketCode, setTicketCode] = useState('');
-  
-  const { addToCart } = useEventStore();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const ticket = event.tickets.find(t => t.id === ticketId);
-
-  if (!ticket) return null;
-
-  const totalPrice = ticket.price * formData.quantity;
-  const isFirstStep = step === 'form';
-  const isPaymentStep = step === 'payment';
-  const isConfirmationStep = step === 'confirmation';
-
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (ticket.price === 0) {
-      handleFreeTicket();
-    } else {
-      setStep('payment');
+    setLoading(true);
+
+    try {
+      const response = await fetch(`/api/events/${event.id}/rsvp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSuccess(true);
+        setTimeout(() => {
+          onClose();
+          setSuccess(false);
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            notes: '',
+            ticketCount: 1
+          });
+        }, 2000);
+      } else {
+        const error = await response.json();
+        alert('Failed to RSVP: ' + error.error);
+      }
+    } catch (error) {
+      console.error('Error submitting RSVP:', error);
+      alert('Failed to RSVP. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleFreeTicket = async () => {
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Generate ticket code
-    const code = `${event.id.toUpperCase().slice(0, 3)}${Date.now().toString().slice(-6)}`;
-    setTicketCode(code);
-    
-    // Add to cart/storage
-    addToCart({
-      eventId: event.id,
-      ticketId: ticket.id,
-      quantity: formData.quantity,
-      attendeeInfo: {
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        phone: formData.phone,
-      },
-    });
-
-    setIsSubmitting(false);
-    setStep('confirmation');
-  };
-
-  const handlePayment = async () => {
-    setIsSubmitting(true);
-    
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Generate ticket code
-    const code = `${event.id.toUpperCase().slice(0, 3)}${Date.now().toString().slice(-6)}`;
-    setTicketCode(code);
-    
-    // Add to cart/storage
-    addToCart({
-      eventId: event.id,
-      ticketId: ticket.id,
-      quantity: formData.quantity,
-      attendeeInfo: {
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        phone: formData.phone,
-      },
-    });
-
-    setIsSubmitting(false);
-    setStep('confirmation');
-  };
-
-  const resetModal = () => {
-    setStep('form');
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      quantity: 1,
+      ...formData,
+      [e.target.name]: e.target.value
     });
-    setTicketCode('');
-    onClose();
   };
+
+  const copyEventLink = () => {
+    navigator.clipboard.writeText(eventUrl);
+    alert('Event link copied to clipboard!');
+  };
+
+  if (!isOpen) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
-        {isConfirmationStep ? (
-          <TicketConfirmation
-            event={event}
-            ticket={ticket}
-            attendeeName={`${formData.firstName} ${formData.lastName}`}
-            attendeeEmail={formData.email}
-            quantity={formData.quantity}
-            ticketCode={ticketCode}
-            onClose={resetModal}
-          />
-        ) : (
-          <>
-            <DialogHeader>
-              <DialogTitle>
-                {isFirstStep ? 'Reserve Your Spot' : 'Payment Details'}
-              </DialogTitle>
-            </DialogHeader>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+      <div className="bg-background rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold">RSVP for Event</h2>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-muted rounded-full transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
 
-            {/* Ticket Summary */}
-            <Card className="mb-6">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">{ticket.name}</CardTitle>
-                <p className="text-sm text-muted-foreground">{event.title}</p>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">
-                    {formData.quantity} ticket{formData.quantity !== 1 ? 's' : ''}
-                  </span>
-                  <span className="font-bold text-foreground">
-                    {totalPrice === 0 ? 'Free' : `$${totalPrice}`}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Form or Payment */}
-            {isFirstStep ? (
-              <form onSubmit={handleFormSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name *</Label>
-                    <Input
-                      id="firstName"
-                      type="text"
-                      required
-                      value={formData.firstName}
-                      onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name *</Label>
-                    <Input
-                      id="lastName"
-                      type="text"
-                      required
-                      value={formData.lastName}
-                      onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="quantity">Number of Tickets</Label>
-                  <Select
-                    value={formData.quantity.toString()}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, quantity: parseInt(value) }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {[1, 2, 3, 4, 5].map(num => (
-                        <SelectItem key={num} value={num.toString()} disabled={num > ticket.available}>
-                          {num} {num > ticket.available ? '(Not available)' : ''}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <Button
-                  type="submit"
-                  className="w-full mt-6"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? 'Processing...' : ticket.price === 0 ? 'Reserve Spot' : 'Continue to Payment'}
-                </Button>
-              </form>
-            ) : (
-              <div className="space-y-6">
-                {/* Mock Payment Form */}
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="cardNumber">Card Number</Label>
-                    <Input
-                      id="cardNumber"
-                      type="text"
-                      placeholder="4242 4242 4242 4242"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="expiry">Expiry Date</Label>
-                      <Input
-                        id="expiry"
-                        type="text"
-                        placeholder="MM/YY"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="cvc">CVC</Label>
-                      <Input
-                        id="cvc"
-                        type="text"
-                        placeholder="123"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <Alert>
-                  <AlertDescription>
-                    <strong>Demo Mode:</strong> This is a simulated payment. No real charges will be made.
-                  </AlertDescription>
-                </Alert>
-
-                <div className="flex space-x-3">
-                  <Button
-                    onClick={() => setStep('form')}
-                    variant="secondary"
-                    className="flex-1"
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    onClick={handlePayment}
-                    className="flex-1"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? 'Processing...' : `Pay $${totalPrice}`}
-                  </Button>
-                </div>
+          {/* Event Info */}
+          <div className="mb-6 p-4 bg-muted rounded-lg">
+            <h3 className="font-semibold text-lg mb-2">{event.title}</h3>
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                <span>{new Date(event.date).toLocaleDateString()}</span>
               </div>
-            )}
-          </>
-        )}
-      </DialogContent>
-    </Dialog>
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4" />
+                <span>{event.time}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                <span>{event.location}</span>
+              </div>
+              {event.max_attendees && (
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  <span>{event.attendee_count || 0} / {event.max_attendees} attendees</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {success ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold mb-2">RSVP Confirmed!</h3>
+              <p className="text-muted-foreground mb-4">You're all set for this event.</p>
+              <button
+                onClick={copyEventLink}
+                className="minimal-button-outline"
+              >
+                Share Event Link
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium mb-2">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="minimal-input"
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium mb-2">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="minimal-input"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="minimal-input"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="ticketCount" className="block text-sm font-medium mb-2">
+                  Number of Tickets
+                </label>
+                <select
+                  id="ticketCount"
+                  name="ticketCount"
+                  value={formData.ticketCount}
+                  onChange={handleChange}
+                  className="minimal-input"
+                >
+                  {[1, 2, 3, 4, 5].map(num => (
+                    <option key={num} value={num}>{num}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="notes" className="block text-sm font-medium mb-2">
+                  Additional Notes
+                </label>
+                <textarea
+                  id="notes"
+                  name="notes"
+                  value={formData.notes}
+                  onChange={handleChange}
+                  className="minimal-input min-h-[80px] resize-none"
+                  placeholder="Any special requirements or notes..."
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="minimal-button-outline flex-1"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="minimal-button-primary flex-1"
+                >
+                  {loading ? 'RSVPing...' : 'Confirm RSVP'}
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

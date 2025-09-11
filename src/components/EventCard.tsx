@@ -32,15 +32,13 @@ export function EventCard({ event }: EventCardProps) {
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Event Image */}
-        {event.image && (
-          <div className="aspect-video w-full overflow-hidden rounded-md mb-4">
-            <img 
-              src={event.image} 
-              alt={event.title}
-              className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
-            />
-          </div>
-        )}
+        <div className="aspect-video w-full overflow-hidden rounded-md mb-4">
+          <img 
+            src={event.image || `https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=300&fit=crop&q=80`} 
+            alt={event.title}
+            className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+          />
+        </div>
         
         {/* Event Content */}
         <div className="space-y-3">

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { neon } from '@neondatabase/serverless';
+import { getEventImage } from '@/lib/eventImages';
 
 export const dynamic = 'force-dynamic';
 
@@ -92,6 +93,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Generate image URL based on category
+    const imageUrl = getEventImage(category, title);
+
     // Create the event
     const [event] = await sql`
       INSERT INTO events (
@@ -100,7 +104,7 @@ export async function POST(request: NextRequest) {
         price, currency, metadata, creator_id
       )
       VALUES (
-        ${title}, ${description}, ${new Date(date)}, ${time}, ${location}, ${category}, ${image || null},
+        ${title}, ${description}, ${new Date(date)}, ${time}, ${location}, ${category}, ${imageUrl},
         ${maxAttendees ? parseInt(maxAttendees) : null}, ${isOnline || false}, ${isPublic !== false}, ${requiresApproval || false},
         ${price ? parseInt(price) : 0}, ${currency || 'USD'}, ${metadata ? JSON.stringify(metadata) : null}, ${creatorId}
       )

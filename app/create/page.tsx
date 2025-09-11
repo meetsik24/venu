@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Header from '@/src/components/Header';
-import { Calendar, MapPin, Users, Clock, Plus } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, Plus, Share2, CheckCircle, Copy } from 'lucide-react';
 
 export default function CreateEventPage() {
   const [formData, setFormData] = useState({
@@ -14,6 +14,8 @@ export default function CreateEventPage() {
     category: '',
     maxAttendees: ''
   });
+  const [createdEvent, setCreatedEvent] = useState<any>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +41,8 @@ export default function CreateEventPage() {
       if (response.ok) {
         const result = await response.json();
         console.log('Event created successfully:', result);
-        alert('Event created successfully!');
+        setCreatedEvent(result.event);
+        setShowSuccess(true);
         // Reset form
         setFormData({
           title: '',
@@ -64,9 +67,22 @@ export default function CreateEventPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+    [e.target.name]: e.target.value
+  });
+};
+
+const copyEventLink = () => {
+  if (createdEvent) {
+    const eventUrl = `${window.location.origin}/events/${createdEvent.id}`;
+    navigator.clipboard.writeText(eventUrl);
+    alert('Event link copied to clipboard!');
+  }
+};
+
+const createAnotherEvent = () => {
+  setShowSuccess(false);
+  setCreatedEvent(null);
+};
 
   return (
     <div className="min-h-screen bg-background">
@@ -74,12 +90,12 @@ export default function CreateEventPage() {
       
       <main className="container py-12">
         <div className="max-w-2xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Create Event</h1>
-            <p className="text-muted-foreground">
-              Fill in the details below to create your event.
-            </p>
-          </div>
+                <div className="mb-8">
+                  <h1 className="text-3xl font-bold mb-2">Create Event</h1>
+                  <p className="text-muted-foreground">
+                    Fill in the details below to create your event.
+                  </p>
+                </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="minimal-card">
@@ -211,14 +227,70 @@ export default function CreateEventPage() {
 
             {/* Submit Button */}
             <div className="flex justify-end">
-              <button type="submit" className="minimal-button-primary">
-                <Plus className="w-4 h-4 mr-2" />
-                Create Event
-              </button>
+                <button type="submit" className="minimal-button-primary">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create Event
+                </button>
             </div>
           </form>
         </div>
       </main>
+
+      {/* Success Modal */}
+      {showSuccess && createdEvent && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-background rounded-lg max-w-md w-full">
+            <div className="p-6">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="w-8 h-8 text-green-600" />
+                </div>
+                <h2 className="text-2xl font-bold mb-2">Event Created Successfully!</h2>
+                <p className="text-muted-foreground">
+                  Your event "{createdEvent.title}" is now live and ready for RSVPs.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="minimal-card">
+                  <h3 className="font-semibold mb-2">Share Your Event</h3>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={`${window.location.origin}/events/${createdEvent.id}`}
+                      readOnly
+                      className="minimal-input flex-1 text-sm"
+                    />
+                    <button
+                      onClick={copyEventLink}
+                      className="minimal-button-outline flex items-center gap-2"
+                    >
+                      <Copy className="w-4 h-4" />
+                      Copy
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={createAnotherEvent}
+                    className="minimal-button-outline flex-1"
+                  >
+                    Create Another Event
+                  </button>
+                  <button
+                    onClick={() => window.location.href = `/events/${createdEvent.id}`}
+                    className="minimal-button-primary flex-1 flex items-center justify-center gap-2"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    View Event
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
