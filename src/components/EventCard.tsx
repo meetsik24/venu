@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Calendar, MapPin, Users, Clock } from 'lucide-react';
+import { generateEventThumbnail } from '@/lib/eventImages';
 
 interface Event {
   id: string;
@@ -34,7 +35,7 @@ export function EventCard({ event }: EventCardProps) {
         {/* Event Image */}
         <div className="aspect-video w-full overflow-hidden rounded-md mb-4">
           <img 
-            src={event.image || `https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=300&fit=crop&q=80`} 
+            src={event.image || generateEventThumbnail(event.title, event.category)} 
             alt={event.title}
             className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
           />

@@ -5,6 +5,7 @@ import Header from '@/src/components/Header';
 import { Hero } from '@/src/components/Hero';
 import { EventGrid } from '@/src/components/EventGrid';
 import { Footer } from '@/src/components/Footer';
+import { generateEventThumbnail } from '@/lib/eventImages';
 
 export default function HomePage() {
   const [events, setEvents] = useState([]);
@@ -30,7 +31,7 @@ export default function HomePage() {
             location: event.location,
             attendees: parseInt(event.attendee_count) || 0,
             maxAttendees: event.max_attendees,
-            image: event.image || 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=300&fit=crop',
+            image: event.image || generateEventThumbnail(event.title, event.category),
             category: event.category
           }));
           setEvents(transformedEvents);

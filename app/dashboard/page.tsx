@@ -10,6 +10,7 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { generateEventThumbnail } from '@/lib/eventImages';
 
 interface Event {
   id: string;
@@ -143,7 +144,7 @@ export default function DashboardPage() {
               {[...Array(4)].map((_, i) => (
                 <div key={i} className="h-32 bg-muted rounded-lg" />
               ))}
-            </div>
+              </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="h-64 bg-muted rounded-lg" />
@@ -225,7 +226,7 @@ export default function DashboardPage() {
               </p>
             </CardContent>
           </Card>
-              </div>
+        </div>
 
         {/* Events Section */}
         <div className="mb-8">
@@ -261,11 +262,11 @@ export default function DashboardPage() {
                 <Card key={event.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
                   <div className="aspect-video w-full overflow-hidden">
                     <img
-                      src={event.image || '/placeholder-event.jpg'}
+                      src={event.image || generateEventThumbnail(event.title, event.category)}
                       alt={event.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                     />
-            </div>
+                          </div>
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-2">
                       <Badge variant="secondary">{event.category}</Badge>
@@ -302,8 +303,8 @@ export default function DashboardPage() {
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
-              </div>
-            </div>
+                      </div>
+                    </div>
                     
                     <h3 className="font-semibold text-lg mb-2 line-clamp-2">
                       {event.title}
@@ -318,7 +319,7 @@ export default function DashboardPage() {
                         <Calendar className="w-4 h-4" />
                         <span>{new Date(event.date).toLocaleDateString()}</span>
                         <span>{event.time}</span>
-        </div>
+                      </div>
 
                       <div className="flex items-center gap-2">
                         <span className="w-4 h-4 flex items-center justify-center">
@@ -326,8 +327,8 @@ export default function DashboardPage() {
                         </span>
                         <span className="line-clamp-1">
                           {event.is_online ? 'Online Event' : event.location}
-                            </span>
-                          </div>
+                        </span>
+              </div>
                       
                       <div className="flex items-center gap-2">
                         <Users className="w-4 h-4" />
@@ -348,12 +349,12 @@ export default function DashboardPage() {
                         View Attendees
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
-              </div>
+                  </div>
                   </CardContent>
                 </Card>
               ))}
-              </div>
-            )}
+            </div>
+          )}
         </div>
       </main>
 

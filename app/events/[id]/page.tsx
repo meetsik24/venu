@@ -7,6 +7,7 @@ import { Calendar, MapPin, Clock, User, ArrowLeft, Share2, Users } from 'lucide-
 import Header from '@/src/components/Header';
 import { Footer } from '@/src/components/Footer';
 import RSVPModal from '@/src/components/RSVPModal';
+import { generateEventThumbnail } from '@/lib/eventImages';
 
 export default function EventDetailPage() {
   const params = useParams();
@@ -117,16 +118,14 @@ export default function EventDetailPage() {
       </div>
 
       {/* Event Image */}
-      {event.image && (
-        <div className="relative h-64 md:h-96 overflow-hidden">
-          <img
-            src={event.image}
-            alt={event.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/20" />
-        </div>
-      )}
+      <div className="relative h-64 md:h-96 overflow-hidden">
+        <img
+          src={event.image || generateEventThumbnail(event.title, event.category)}
+          alt={event.title}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/20" />
+      </div>
 
       {/* Content */}
       <div className="container py-8">
