@@ -1,10 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Header from '@/src/components/Header';
 import { Calendar, MapPin, Users, Clock, Plus, Share2, CheckCircle, Copy } from 'lucide-react';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 export default function CreateEventPage() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -17,18 +21,29 @@ export default function CreateEventPage() {
   const [createdEvent, setCreatedEvent] = useState<any>(null);
   const [showSuccess, setShowSuccess] = useState(false);
 
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/signin');
+      return;
+    }
+  }, [user, authLoading, router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!user) return;
+    
     try {
+      const token = localStorage.getItem('auth_token');
       const response = await fetch('/api/events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           ...formData,
-          creatorId: '3816bc6e-0410-4840-8910-592cdceda08a', // Test user ID
+          creatorId: user.id,
           maxAttendees: formData.maxAttendees ? parseInt(formData.maxAttendees) : null,
           isOnline: formData.location.toLowerCase() === 'online',
           isPublic: true,
@@ -84,9 +99,29 @@ const createAnotherEvent = () => {
   setCreatedEvent(null);
 };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container py-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-muted rounded w-1/4 mb-8" />
+            <div className="max-w-2xl mx-auto">
+              <div className="h-64 bg-muted rounded-lg" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null; // Will redirect to signin
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      <Header isSignedIn={true} />
+      <Header />
       
       <main className="container py-12">
         <div className="max-w-2xl mx-auto">
