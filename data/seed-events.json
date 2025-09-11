@@ -1,0 +1,497 @@
+{
+  "events": [
+    {
+      "id": "startup-pitch-night",
+      "slug": "startup-pitch-night",
+      "title": "Startup Pitch Night",
+      "description": "Join us for an evening of innovation as local entrepreneurs present their groundbreaking ideas. Network with investors, mentors, and fellow founders while enjoying refreshments and live demos.",
+      "shortDescription": "Local entrepreneurs pitch their innovative startups",
+      "coverImage": "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "organizerId": "tech-collective",
+      "organizer": {
+        "name": "Tech Collective",
+        "avatar": "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=400",
+        "verified": true
+      },
+      "datetime": "2025-02-15T19:00:00.000Z",
+      "endDatetime": "2025-02-15T22:00:00.000Z",
+      "timezone": "America/New_York",
+      "location": {
+        "type": "venue",
+        "name": "Innovation Hub",
+        "address": "123 Tech Street, San Francisco, CA 94105",
+        "coordinates": { "lat": 37.7749, "lng": -122.4194 }
+      },
+      "category": "Business",
+      "tickets": [
+        {
+          "id": "general",
+          "name": "General Admission",
+          "price": 0,
+          "currency": "USD",
+          "available": 150,
+          "total": 200,
+          "description": "Access to all presentations and networking"
+        },
+        {
+          "id": "vip",
+          "name": "VIP Access",
+          "price": 25,
+          "currency": "USD",
+          "available": 28,
+          "total": 30,
+          "description": "Premium seating + private investor mixer"
+        }
+      ],
+      "tags": ["startup", "networking", "pitch", "innovation"],
+      "status": "published",
+      "createdAt": "2025-01-10T10:00:00.000Z"
+    },
+    {
+      "id": "design-systems-workshop",
+      "slug": "design-systems-workshop",
+      "title": "Building Scalable Design Systems",
+      "description": "Master the art of creating maintainable design systems that scale across teams and products. This hands-on workshop covers component libraries, design tokens, and documentation strategies.",
+      "shortDescription": "Hands-on workshop on creating maintainable design systems",
+      "coverImage": "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "organizerId": "design-guild",
+      "organizer": {
+        "name": "Design Guild",
+        "avatar": "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=400",
+        "verified": true
+      },
+      "datetime": "2025-02-20T14:00:00.000Z",
+      "endDatetime": "2025-02-20T18:00:00.000Z",
+      "timezone": "America/Los_Angeles",
+      "location": {
+        "type": "online",
+        "platform": "Zoom",
+        "url": "https://zoom.us/j/example"
+      },
+      "category": "Design",
+      "tickets": [
+        {
+          "id": "early-bird",
+          "name": "Early Bird",
+          "price": 49,
+          "currency": "USD",
+          "available": 45,
+          "total": 50,
+          "description": "Full workshop access + resources"
+        }
+      ],
+      "tags": ["design", "workshop", "systems", "ux"],
+      "status": "published",
+      "createdAt": "2025-01-08T15:30:00.000Z"
+    },
+    {
+      "id": "ai-ethics-panel",
+      "slug": "ai-ethics-panel",
+      "title": "AI Ethics: Navigating the Future",
+      "description": "Join leading AI researchers and ethicists for a thought-provoking discussion on the ethical implications of artificial intelligence in our daily lives and future society.",
+      "shortDescription": "Panel discussion on AI ethics and societal impact",
+      "coverImage": "https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "organizerId": "future-tech",
+      "organizer": {
+        "name": "Future Tech Institute",
+        "avatar": "https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=400",
+        "verified": true
+      },
+      "datetime": "2025-02-25T18:30:00.000Z",
+      "endDatetime": "2025-02-25T20:30:00.000Z",
+      "timezone": "America/New_York",
+      "location": {
+        "type": "venue",
+        "name": "University Auditorium",
+        "address": "456 Academic Ave, Boston, MA 02115",
+        "coordinates": { "lat": 42.3601, "lng": -71.0589 }
+      },
+      "category": "Technology",
+      "tickets": [
+        {
+          "id": "free",
+          "name": "Free Admission",
+          "price": 0,
+          "currency": "USD",
+          "available": 485,
+          "total": 500,
+          "description": "General seating for the panel discussion"
+        }
+      ],
+      "tags": ["ai", "ethics", "panel", "technology"],
+      "status": "published",
+      "createdAt": "2025-01-12T09:15:00.000Z"
+    },
+    {
+      "id": "mindfulness-retreat",
+      "slug": "mindfulness-retreat",
+      "title": "Weekend Mindfulness Retreat",
+      "description": "Escape the hustle and bustle with our weekend mindfulness retreat. Includes guided meditation sessions, nature walks, healthy meals, and digital detox activities in a serene mountain setting.",
+      "shortDescription": "Weekend retreat focused on mindfulness and digital detox",
+      "coverImage": "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "organizerId": "wellness-co",
+      "organizer": {
+        "name": "Wellness Co.",
+        "avatar": "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=400",
+        "verified": false
+      },
+      "datetime": "2025-03-01T15:00:00.000Z",
+      "endDatetime": "2025-03-03T12:00:00.000Z",
+      "timezone": "America/Denver",
+      "location": {
+        "type": "venue",
+        "name": "Mountain View Retreat Center",
+        "address": "789 Peaceful Valley Rd, Boulder, CO 80302",
+        "coordinates": { "lat": 40.0150, "lng": -105.2705 }
+      },
+      "category": "Wellness",
+      "tickets": [
+        {
+          "id": "full-package",
+          "name": "Full Weekend Package",
+          "price": 299,
+          "currency": "USD",
+          "available": 18,
+          "total": 25,
+          "description": "Accommodation, meals, and all activities included"
+        },
+        {
+          "id": "day-pass",
+          "name": "Day Pass",
+          "price": 89,
+          "currency": "USD",
+          "available": 32,
+          "total": 40,
+          "description": "Access to Saturday activities and lunch"
+        }
+      ],
+      "tags": ["mindfulness", "retreat", "wellness", "meditation"],
+      "status": "published",
+      "createdAt": "2025-01-05T14:20:00.000Z"
+    },
+    {
+      "id": "crypto-trading-masterclass",
+      "slug": "crypto-trading-masterclass",
+      "title": "Cryptocurrency Trading Masterclass",
+      "description": "Learn advanced trading strategies, risk management, and technical analysis from seasoned crypto traders. Includes live trading demos and Q&A with industry experts.",
+      "shortDescription": "Advanced cryptocurrency trading strategies and analysis",
+      "coverImage": "https://images.pexels.com/photos/7788009/pexels-photo-7788009.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "organizerId": "crypto-academy",
+      "organizer": {
+        "name": "Crypto Academy",
+        "avatar": "https://images.pexels.com/photos/7788009/pexels-photo-7788009.jpeg?auto=compress&cs=tinysrgb&w=400",
+        "verified": true
+      },
+      "datetime": "2025-02-28T20:00:00.000Z",
+      "endDatetime": "2025-02-28T23:00:00.000Z",
+      "timezone": "America/New_York",
+      "location": {
+        "type": "online",
+        "platform": "YouTube Live",
+        "url": "https://youtube.com/live/example"
+      },
+      "category": "Finance",
+      "tickets": [
+        {
+          "id": "basic",
+          "name": "Basic Access",
+          "price": 97,
+          "currency": "USD",
+          "available": 847,
+          "total": 1000,
+          "description": "Live stream access and basic materials"
+        },
+        {
+          "id": "premium",
+          "name": "Premium Package",
+          "price": 197,
+          "currency": "USD",
+          "available": 143,
+          "total": 200,
+          "description": "All materials + 1-on-1 consultation call"
+        }
+      ],
+      "tags": ["crypto", "trading", "finance", "masterclass"],
+      "status": "published",
+      "createdAt": "2025-01-18T11:45:00.000Z"
+    },
+    {
+      "id": "local-food-festival",
+      "slug": "local-food-festival",
+      "title": "Local Food Festival",
+      "description": "Celebrate local cuisine with over 30 food vendors, live music, cooking demonstrations, and family-friendly activities. Supporting local farmers and small businesses.",
+      "shortDescription": "Celebrate local cuisine with 30+ vendors and live music",
+      "coverImage": "https://images.pexels.com/photos/1581384/pexels-photo-1581384.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "organizerId": "community-events",
+      "organizer": {
+        "name": "Community Events LLC",
+        "avatar": "https://images.pexels.com/photos/1581384/pexels-photo-1581384.jpeg?auto=compress&cs=tinysrgb&w=400",
+        "verified": true
+      },
+      "datetime": "2025-03-08T11:00:00.000Z",
+      "endDatetime": "2025-03-08T18:00:00.000Z",
+      "timezone": "America/Chicago",
+      "location": {
+        "type": "venue",
+        "name": "Central Park",
+        "address": "Central Park, Austin, TX 78701",
+        "coordinates": { "lat": 30.2672, "lng": -97.7431 }
+      },
+      "category": "Food",
+      "tickets": [
+        {
+          "id": "admission",
+          "name": "Festival Admission",
+          "price": 15,
+          "currency": "USD",
+          "available": 2847,
+          "total": 3000,
+          "description": "Entry to festival grounds and entertainment"
+        },
+        {
+          "id": "vip-foodie",
+          "name": "VIP Foodie Pass",
+          "price": 65,
+          "currency": "USD",
+          "available": 78,
+          "total": 100,
+          "description": "Skip lines + exclusive tastings + chef meet & greet"
+        }
+      ],
+      "tags": ["food", "festival", "local", "community"],
+      "status": "published",
+      "createdAt": "2025-01-22T16:30:00.000Z"
+    },
+    {
+      "id": "photography-workshop",
+      "slug": "photography-workshop",
+      "title": "Street Photography Workshop",
+      "description": "Master the art of street photography in this intensive workshop. Learn composition, lighting, and storytelling techniques while exploring the city with a professional photographer.",
+      "shortDescription": "Intensive workshop on street photography techniques",
+      "coverImage": "https://images.pexels.com/photos/606541/pexels-photo-606541.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "organizerId": "photo-collective",
+      "organizer": {
+        "name": "Photo Collective",
+        "avatar": "https://images.pexels.com/photos/606541/pexels-photo-606541.jpeg?auto=compress&cs=tinysrgb&w=400",
+        "verified": false
+      },
+      "datetime": "2025-03-15T09:00:00.000Z",
+      "endDatetime": "2025-03-15T16:00:00.000Z",
+      "timezone": "America/New_York",
+      "location": {
+        "type": "venue",
+        "name": "Downtown Arts District",
+        "address": "Arts District, Los Angeles, CA 90012",
+        "coordinates": { "lat": 34.0522, "lng": -118.2437 }
+      },
+      "category": "Arts",
+      "tickets": [
+        {
+          "id": "workshop",
+          "name": "Workshop Ticket",
+          "price": 129,
+          "currency": "USD",
+          "available": 12,
+          "total": 15,
+          "description": "Full day workshop with equipment and lunch"
+        }
+      ],
+      "tags": ["photography", "workshop", "street", "arts"],
+      "status": "published",
+      "createdAt": "2025-01-25T13:10:00.000Z"
+    },
+    {
+      "id": "climate-action-summit",
+      "slug": "climate-action-summit",
+      "title": "Climate Action Summit 2025",
+      "description": "Join climate activists, scientists, and policymakers for actionable solutions to the climate crisis. Features keynote speakers, solution showcases, and networking sessions.",
+      "shortDescription": "Summit on climate solutions with activists and scientists",
+      "coverImage": "https://images.pexels.com/photos/4022092/pexels-photo-4022092.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "organizerId": "green-future",
+      "organizer": {
+        "name": "Green Future Foundation",
+        "avatar": "https://images.pexels.com/photos/4022092/pexels-photo-4022092.jpeg?auto=compress&cs=tinysrgb&w=400",
+        "verified": true
+      },
+      "datetime": "2025-04-22T08:00:00.000Z",
+      "endDatetime": "2025-04-22T17:00:00.000Z",
+      "timezone": "America/New_York",
+      "location": {
+        "type": "venue",
+        "name": "Convention Center",
+        "address": "Convention Center Dr, Miami, FL 33101",
+        "coordinates": { "lat": 25.7617, "lng": -80.1918 }
+      },
+      "category": "Environment",
+      "tickets": [
+        {
+          "id": "student",
+          "name": "Student Ticket",
+          "price": 25,
+          "currency": "USD",
+          "available": 195,
+          "total": 200,
+          "description": "Student admission with valid ID"
+        },
+        {
+          "id": "general",
+          "name": "General Admission",
+          "price": 75,
+          "currency": "USD",
+          "available": 745,
+          "total": 800,
+          "description": "Full summit access and materials"
+        },
+        {
+          "id": "supporter",
+          "name": "Climate Supporter",
+          "price": 150,
+          "currency": "USD",
+          "available": 48,
+          "total": 50,
+          "description": "Premium access + exclusive dinner"
+        }
+      ],
+      "tags": ["climate", "environment", "summit", "activism"],
+      "status": "published",
+      "createdAt": "2025-01-30T10:25:00.000Z"
+    },
+    {
+      "id": "jazz-night-live",
+      "slug": "jazz-night-live",
+      "title": "Jazz Night Live",
+      "description": "An intimate evening of live jazz featuring local musicians and special guest performers. Enjoy craft cocktails and small plates in our cozy venue with exceptional acoustics.",
+      "shortDescription": "Intimate evening of live jazz with local musicians",
+      "coverImage": "https://images.pexels.com/photos/164821/pexels-photo-164821.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "organizerId": "music-venue",
+      "organizer": {
+        "name": "The Music Room",
+        "avatar": "https://images.pexels.com/photos/164821/pexels-photo-164821.jpeg?auto=compress&cs=tinysrgb&w=400",
+        "verified": true
+      },
+      "datetime": "2025-03-22T20:00:00.000Z",
+      "endDatetime": "2025-03-22T23:30:00.000Z",
+      "timezone": "America/New_York",
+      "location": {
+        "type": "venue",
+        "name": "The Blue Note Lounge",
+        "address": "88 Jazz Street, New Orleans, LA 70116",
+        "coordinates": { "lat": 29.9511, "lng": -90.0715 }
+      },
+      "category": "Music",
+      "tickets": [
+        {
+          "id": "general",
+          "name": "General Seating",
+          "price": 35,
+          "currency": "USD",
+          "available": 67,
+          "total": 80,
+          "description": "General admission seating"
+        },
+        {
+          "id": "premium",
+          "name": "Front Row",
+          "price": 55,
+          "currency": "USD",
+          "available": 8,
+          "total": 12,
+          "description": "Premium front row seating"
+        }
+      ],
+      "tags": ["jazz", "music", "live", "intimate"],
+      "status": "published",
+      "createdAt": "2025-02-01T12:40:00.000Z"
+    },
+    {
+      "id": "book-club-meetup",
+      "slug": "book-club-meetup",
+      "title": "Monthly Book Club: 'The Future We Choose'",
+      "description": "Join our monthly book discussion focusing on 'The Future We Choose' by Christiana Figueres. Light refreshments provided. New members welcome!",
+      "shortDescription": "Monthly book discussion with refreshments",
+      "coverImage": "https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "organizerId": "readers-circle",
+      "organizer": {
+        "name": "Readers Circle",
+        "avatar": "https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=400",
+        "verified": false
+      },
+      "datetime": "2025-03-10T18:00:00.000Z",
+      "endDatetime": "2025-03-10T20:00:00.000Z",
+      "timezone": "America/Los_Angeles",
+      "location": {
+        "type": "venue",
+        "name": "Community Library",
+        "address": "123 Library Lane, Portland, OR 97201",
+        "coordinates": { "lat": 45.5152, "lng": -122.6784 }
+      },
+      "category": "Education",
+      "tickets": [
+        {
+          "id": "free",
+          "name": "Free Admission",
+          "price": 0,
+          "currency": "USD",
+          "available": 23,
+          "total": 25,
+          "description": "Free admission to book discussion"
+        }
+      ],
+      "tags": ["books", "discussion", "community", "education"],
+      "status": "published",
+      "createdAt": "2025-02-05T09:50:00.000Z"
+    }
+  ],
+  "attendees": [
+    {
+      "id": "att-001",
+      "eventId": "startup-pitch-night",
+      "name": "Sarah Johnson",
+      "email": "sarah.johnson@example.com",
+      "ticketId": "general",
+      "ticketCode": "SP2025001",
+      "checkedIn": false,
+      "registeredAt": "2025-01-15T14:30:00.000Z"
+    },
+    {
+      "id": "att-002",
+      "eventId": "startup-pitch-night",
+      "name": "Michael Chen",
+      "email": "m.chen@example.com",
+      "ticketId": "vip",
+      "ticketCode": "SP2025002",
+      "checkedIn": false,
+      "registeredAt": "2025-01-16T10:15:00.000Z"
+    },
+    {
+      "id": "att-003",
+      "eventId": "design-systems-workshop",
+      "name": "Emily Rodriguez",
+      "email": "emily.r@example.com",
+      "ticketId": "early-bird",
+      "ticketCode": "DS2025001",
+      "checkedIn": false,
+      "registeredAt": "2025-01-12T16:45:00.000Z"
+    },
+    {
+      "id": "att-004",
+      "eventId": "ai-ethics-panel",
+      "name": "David Kim",
+      "email": "david.kim@example.com",
+      "ticketId": "free",
+      "ticketCode": "AE2025001",
+      "checkedIn": true,
+      "registeredAt": "2025-01-20T11:20:00.000Z"
+    },
+    {
+      "id": "att-005",
+      "eventId": "mindfulness-retreat",
+      "name": "Lisa Thompson",
+      "email": "lisa.t@example.com",
+      "ticketId": "full-package",
+      "ticketCode": "MR2025001",
+      "checkedIn": false,
+      "registeredAt": "2025-01-18T13:30:00.000Z"
+    }
+  ]
+}
