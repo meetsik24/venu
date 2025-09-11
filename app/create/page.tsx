@@ -15,10 +15,50 @@ export default function CreateEventPage() {
     maxAttendees: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Creating event:', formData);
-    // Handle form submission
+    
+    try {
+      const response = await fetch('/api/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          creatorId: '3816bc6e-0410-4840-8910-592cdceda08a', // Test user ID
+          maxAttendees: formData.maxAttendees ? parseInt(formData.maxAttendees) : null,
+          isOnline: formData.location.toLowerCase() === 'online',
+          isPublic: true,
+          requiresApproval: false,
+          price: 0,
+          currency: 'USD'
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Event created successfully:', result);
+        alert('Event created successfully!');
+        // Reset form
+        setFormData({
+          title: '',
+          description: '',
+          date: '',
+          time: '',
+          location: '',
+          category: '',
+          maxAttendees: ''
+        });
+      } else {
+        const error = await response.json();
+        console.error('Error creating event:', error);
+        alert('Failed to create event: ' + error.error);
+      }
+    } catch (error) {
+      console.error('Error creating event:', error);
+      alert('Failed to create event. Please try again.');
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
