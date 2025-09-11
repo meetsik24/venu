@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { neon } from '@neondatabase/serverless';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
     const DATABASE_URL = process.env.DATABASE_URL;
+    const JWT_SECRET = process.env.JWT_SECRET;
     
-    if (!DATABASE_URL) {
-      return NextResponse.json({ error: 'DATABASE_URL not set' }, { status: 500 });
+    if (!DATABASE_URL || !JWT_SECRET) {
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
     
     const sql = neon(DATABASE_URL);
@@ -46,8 +48,15 @@ export async function POST(request: NextRequest) {
       RETURNING id, name, email, created_at
     `;
 
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user.id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
     return NextResponse.json(
-      { user },
+      { user, token },
       { status: 201 }
     );
   } catch (error) {

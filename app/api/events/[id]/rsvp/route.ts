@@ -64,10 +64,28 @@ export async function POST(
       }
     }
 
-    // Create RSVP (using a dummy user_id for now)
+    // Create or get user
+    let userId;
+    const [existingUser] = await sql`
+      SELECT id FROM users WHERE email = ${email}
+    `;
+    
+    if (existingUser) {
+      userId = existingUser.id;
+    } else {
+      // Create a guest user
+      const [newUser] = await sql`
+        INSERT INTO users (name, email, password, created_at, updated_at)
+        VALUES (${name}, ${email}, 'guest', NOW(), NOW())
+        RETURNING id
+      `;
+      userId = newUser.id;
+    }
+
+    // Create RSVP
     const [rsvp] = await sql`
       INSERT INTO rsvps (event_id, user_id, name, email, phone, notes, ticket_count, status)
-      VALUES (${params.id}, '3816bc6e-0410-4840-8910-592cdceda08a', ${name}, ${email}, ${phone || null}, ${notes || null}, ${ticketCount}, 'confirmed')
+      VALUES (${params.id}, ${userId}, ${name}, ${email}, ${phone || null}, ${notes || null}, ${ticketCount}, 'confirmed')
       RETURNING *
     `;
 
