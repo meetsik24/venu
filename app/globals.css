@@ -1,76 +1,75 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-@import '../src/styles/tokens.css';
-
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
 
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 120 15% 15%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 120 15% 15%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
+    --popover-foreground: 120 15% 15%;
+    --primary: 120 60% 25%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
+    --secondary: 120 20% 95%;
+    --secondary-foreground: 120 15% 15%;
+    --muted: 120 20% 95%;
+    --muted-foreground: 120 10% 45%;
+    --accent: 120 30% 90%;
+    --accent-foreground: 120 15% 15%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --border: 120 20% 90%;
+    --input: 120 20% 90%;
+    --ring: 120 60% 25%;
     --radius: 0.5rem;
+    
+    /* Briq.tz inspired colors */
+    --grass-50: 120 25% 98%;
+    --grass-100: 120 20% 95%;
+    --grass-200: 120 15% 90%;
+    --grass-300: 120 10% 80%;
+    --grass-400: 120 8% 65%;
+    --grass-500: 120 15% 45%;
+    --grass-600: 120 25% 35%;
+    --grass-700: 120 35% 25%;
+    --grass-800: 120 45% 15%;
+    --grass-900: 120 55% 8%;
+    
+    /* Earth tones */
+    --earth-50: 30 20% 98%;
+    --earth-100: 30 15% 95%;
+    --earth-200: 30 10% 90%;
+    --earth-300: 30 8% 80%;
+    --earth-400: 30 6% 65%;
+    --earth-500: 30 10% 45%;
+    --earth-600: 30 15% 35%;
+    --earth-700: 30 20% 25%;
+    --earth-800: 30 25% 15%;
+    --earth-900: 30 30% 8%;
   }
+
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --background: 120 55% 8%;
+    --foreground: 120 25% 95%;
+    --card: 120 45% 12%;
+    --card-foreground: 120 25% 95%;
+    --popover: 120 45% 12%;
+    --popover-foreground: 120 25% 95%;
+    --primary: 120 60% 60%;
+    --primary-foreground: 120 55% 8%;
+    --secondary: 120 30% 20%;
+    --secondary-foreground: 120 25% 95%;
+    --muted: 120 30% 20%;
+    --muted-foreground: 120 15% 65%;
+    --accent: 120 30% 20%;
+    --accent-foreground: 120 25% 95%;
+    --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --border: 120 30% 20%;
+    --input: 120 30% 20%;
+    --ring: 120 60% 60%;
   }
 }
 
@@ -78,31 +77,88 @@
   * {
     @apply border-border;
   }
+  
   body {
-    @apply bg-background text-foreground;
-    font-family: var(--font-family-sans);
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium tracking-tight;
+  }
+  
+  h1 {
+    @apply text-4xl;
+  }
+  
+  h2 {
+    @apply text-3xl;
+  }
+  
+  h3 {
+    @apply text-2xl;
+  }
+  
+  h4 {
+    @apply text-xl;
+  }
+  
+  h5 {
+    @apply text-lg;
+  }
+  
+  h6 {
+    @apply text-base;
   }
 }
 
 @layer components {
   .container {
-    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto max-w-6xl px-4 sm:px-6 lg:px-8;
   }
   
-  .gradient-text {
-    background: radial-gradient(circle at top left, #099ef1 0%,#6863f8 18.82%,#d84ffa 32.6%, #f058c5 52.83%, #ff4f90 68.03%, #ff6558 87.66%, #ff891f 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  .minimal-card {
+    @apply bg-card border border-border rounded-lg p-6;
   }
   
-  .fixed-top {
-    @apply fixed top-0 left-0 right-0 z-50;
+  .minimal-input {
+    @apply w-full px-3 py-2 bg-background border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors;
   }
   
-  .fixed-bottom {
-    @apply fixed bottom-0 left-0 right-0 z-40;
+  .minimal-button {
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+  }
+  
+  .minimal-button-primary {
+    @apply minimal-button bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+  
+  .minimal-button-secondary {
+    @apply minimal-button bg-secondary text-secondary-foreground hover:bg-secondary/80;
+  }
+  
+  .minimal-button-ghost {
+    @apply minimal-button hover:bg-accent hover:text-accent-foreground;
+  }
+  
+  .minimal-button-outline {
+    @apply minimal-button border border-border hover:bg-accent hover:text-accent-foreground;
+  }
+  
+  /* Grass feeling background */
+  .grass-pattern {
+    background-image: 
+      radial-gradient(circle at 20% 80%, hsl(var(--grass-100)) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, hsl(var(--grass-200)) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, hsl(var(--earth-100)) 0%, transparent 50%);
+  }
+  
+  .grass-pattern-dark {
+    background-image: 
+      radial-gradient(circle at 20% 80%, hsl(var(--grass-800)) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, hsl(var(--grass-700)) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, hsl(var(--earth-800)) 0%, transparent 50%);
   }
 }
 
