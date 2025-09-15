@@ -42,8 +42,12 @@ export const rsvps = pgTable('rsvps', {
   id: uuid('id').primaryKey().defaultRandom(),
   eventId: uuid('event_id').notNull().references(() => events.id, { onDelete: 'cascade' }),
   userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  status: varchar('status', { length: 20 }).notNull().default('pending'), // pending, confirmed, cancelled
+  name: varchar('name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull(),
+  phone: varchar('phone', { length: 20 }),
   notes: text('notes'),
+  ticketCount: integer('ticket_count').default(1).notNull(),
+  status: varchar('status', { length: 20 }).notNull().default('confirmed'), // pending, confirmed, cancelled
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
