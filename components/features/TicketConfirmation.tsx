@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import type { Event, Ticket } from '../store/eventStore';
+import type { Event, Ticket } from '@/store/eventStore';
 
 interface TicketConfirmationProps {
   event: Event;

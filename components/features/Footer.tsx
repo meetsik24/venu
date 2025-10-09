@@ -11,7 +11,7 @@ export function Footer() {
           <div className="flex items-center space-x-2">
             <div className="w-6 h-6 relative">
               <Image
-                src="/venu.png"
+                src="/venu.svg"
                 alt="Venu Logo"
                 fill
                 className="object-contain"

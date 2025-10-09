@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Header from '@/src/components/Header';
-import { EventGrid } from '@/src/components/EventGrid';
-import { Footer } from '@/src/components/Footer';
+import Header from '@/components/features/Header';
+import { EventGrid } from '@/components/features/EventGrid';
+import { Footer } from '@/components/features/Footer';
 import { Search, Filter } from 'lucide-react';
+import { apiClient } from '@/lib/api/client';
+import { generateEventThumbnail } from '@/lib/eventImages';
 
 interface Event {
   id: string;
@@ -38,13 +40,41 @@ export default function EventsPage() {
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const response = await fetch('/api/events');
-        if (response.ok) {
-          const data = await response.json();
-          setEvents(data.events || []);
-        } else {
-          console.error('Failed to fetch events:', response.statusText);
-        }
+        const data = await apiClient.getEvents({
+          category: selectedCategory === 'All' ? undefined : selectedCategory,
+          search: searchTerm || undefined
+        });
+        
+        // Transform the data to match the expected format
+        const transformedEvents = data.events.map((event: any) => ({
+          id: event.id,
+          title: event.title,
+          description: event.description,
+          date: new Date(event.date).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          }),
+          time: new Date(event.date).toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+          }),
+          location: event.location,
+          category: event.category,
+          attendee_count: event.rsvp_count,
+          max_attendees: 100,
+          image: generateEventThumbnail(event.title, event.category),
+          price: 0,
+          currency: 'USD',
+          is_online: false,
+          is_public: true,
+          requires_approval: false,
+          created_at: event.created_at,
+          updated_at: event.updated_at,
+          creator_id: event.creator_id
+        }));
+        
+        setEvents(transformedEvents);
       } catch (error) {
         console.error('Error fetching events:', error);
       } finally {
@@ -52,7 +82,7 @@ export default function EventsPage() {
       }
     }
     fetchEvents();
-  }, []);
+  }, [searchTerm, selectedCategory]);
 
   const filteredEvents = events.filter(event => {
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

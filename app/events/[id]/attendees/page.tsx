@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Users, Mail, Phone, Calendar, Download } from 'lucide-react';
-import Header from '@/src/components/Header';
-import { Footer } from '@/src/components/Footer';
+import Header from '@/components/features/Header';
+import { Footer } from '@/components/features/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Attendee {
   id: string;

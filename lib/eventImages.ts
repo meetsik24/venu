@@ -1,4 +1,15 @@
-// Category color schemes for dynamic thumbnails
+// Predefined category images from Unsplash
+const categoryImages: { [key: string]: string } = {
+  'Technology': 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop',
+  'Design': 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop',
+  'Business': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+  'Education': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop',
+  'Health': 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop',
+  'Entertainment': 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&h=300&fit=crop',
+  'Other': 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=300&fit=crop'
+};
+
+// Category color schemes for dynamic thumbnails (fallback)
 const categoryColors: { [key: string]: { primary: string; secondary: string; accent: string; icon: string } } = {
   'Technology': {
     primary: '#3B82F6', // Blue
@@ -114,7 +125,12 @@ export const generateEventThumbnail = (title: string, category: string): string 
   return `data:image/svg+xml;charset=utf-8,${encodedSvg}`;
 };
 
-// Legacy function for backward compatibility
+// Get predefined category image or generate dynamic thumbnail
 export const getEventImage = (category: string, title: string): string => {
-  return generateEventThumbnail(title, category);
+  return categoryImages[category] || generateEventThumbnail(title, category);
+};
+
+// Get predefined category image
+export const getCategoryImage = (category: string): string => {
+  return categoryImages[category] || categoryImages['Other'];
 };

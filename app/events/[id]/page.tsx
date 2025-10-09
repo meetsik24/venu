@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Calendar, MapPin, Clock, User, ArrowLeft, Share2, Users } from 'lucide-react';
-import Header from '@/src/components/Header';
-import { Footer } from '@/src/components/Footer';
-import RSVPModal from '@/src/components/RSVPModal';
+import Header from '@/components/features/Header';
+import { Footer } from '@/components/features/Footer';
+import RSVPModal from '@/components/features/RSVPModal';
 import { generateEventThumbnail } from '@/lib/eventImages';
 
 export default function EventDetailPage() {

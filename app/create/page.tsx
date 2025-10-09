@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Header from '@/src/components/Header';
-import { Calendar, MapPin, Users, Clock, Plus, Share2, CheckCircle, Copy } from 'lucide-react';
-import { useAuth } from '@/src/contexts/AuthContext';
-import NotificationModal from '@/src/components/NotificationModal';
+import Header from '@/components/features/Header';
+import { Calendar, MapPin, Users, Clock, Plus, Share2, CheckCircle, Copy, Image as ImageIcon, Eye } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import NotificationModal from '@/components/features/NotificationModal';
+import { getCategoryImage } from '@/lib/eventImages';
 
 export default function CreateEventPage() {
   const router = useRouter();
@@ -17,10 +18,12 @@ export default function CreateEventPage() {
     time: '',
     location: '',
     category: '',
-    maxAttendees: ''
+    maxAttendees: '',
+    imageUrl: ''
   });
   const [createdEvent, setCreatedEvent] = useState<any>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string>('');
   const [notification, setNotification] = useState<{
     isOpen: boolean;
     type: 'success' | 'error' | 'warning' | 'info';
@@ -40,6 +43,17 @@ export default function CreateEventPage() {
       return;
     }
   }, [user, authLoading, router]);
+
+  // Update image preview when imageUrl or category changes
+  useEffect(() => {
+    if (formData.imageUrl) {
+      setImagePreview(formData.imageUrl);
+    } else if (formData.category) {
+      setImagePreview(getCategoryImage(formData.category));
+    } else {
+      setImagePreview('');
+    }
+  }, [formData.imageUrl, formData.category]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +76,8 @@ export default function CreateEventPage() {
           isPublic: true,
           requiresApproval: false,
           price: 0,
-          currency: 'USD'
+          currency: 'USD',
+          image: formData.imageUrl || null
         }),
       });
 
@@ -79,7 +94,8 @@ export default function CreateEventPage() {
           time: '',
           location: '',
           category: '',
-          maxAttendees: ''
+          maxAttendees: '',
+          imageUrl: ''
         });
              } else {
                const error = await response.json();
@@ -285,6 +301,57 @@ const createAnotherEvent = () => {
                     />
                   </div>
                 </div>
+
+                {/* Image URL */}
+                <div>
+                  <label htmlFor="imageUrl" className="block text-sm font-medium mb-2">
+                    Event Image URL (Optional)
+                  </label>
+                  <div className="relative">
+                    <ImageIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <input
+                      type="url"
+                      id="imageUrl"
+                      name="imageUrl"
+                      value={formData.imageUrl}
+                      onChange={handleChange}
+                      className="minimal-input pl-10"
+                      placeholder="https://example.com/image.jpg"
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Leave empty to use a predefined image based on category
+                  </p>
+                </div>
+
+                {/* Image Preview */}
+                {imagePreview && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Image Preview
+                    </label>
+                    <div className="relative group">
+                      <img
+                        src={imagePreview}
+                        alt="Event preview"
+                        className="w-full h-48 object-cover rounded-lg border border-border"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                        <button
+                          type="button"
+                          onClick={() => window.open(imagePreview, '_blank')}
+                          className="flex items-center gap-2 text-white bg-white/20 px-3 py-2 rounded-md hover:bg-white/30 transition-colors"
+                        >
+                          <Eye className="w-4 h-4" />
+                          View Full Size
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Plus, Search, User, LogOut } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -15,7 +15,7 @@ export default function Header() {
         <Link href="/" className="flex items-center space-x-3">
           <div className="w-10 h-10 relative">
             <Image
-              src="/venu.png"
+              src="/venu.svg"
               alt="Venu Logo"
               fill
               className="object-contain"

@@ -3,16 +3,17 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Calendar, Users, Eye, Share2, Plus, BarChart3, Settings, Edit, Trash2, UserCheck, DollarSign, ArrowRight } from 'lucide-react';
-import Header from '@/src/components/Header';
-import { Footer } from '@/src/components/Footer';
+import Header from '@/components/features/Header';
+import { Footer } from '@/components/features/Footer';
 import Link from 'next/link';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { generateEventThumbnail } from '@/lib/eventImages';
-import EditEventModal from '@/src/components/EditEventModal';
-import NotificationModal from '@/src/components/NotificationModal';
+import EditEventModal from '@/components/features/EditEventModal';
+import NotificationModal from '@/components/features/NotificationModal';
+import { apiClient } from '@/lib/api/client';
 
 interface Event {
   id: string;
@@ -73,30 +74,51 @@ export default function DashboardPage() {
 
     async function fetchUserEvents() {
       try {
-        const token = localStorage.getItem('auth_token');
-        const response = await fetch('/api/events/user', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const userEvents = await apiClient.getUserEvents();
         
-        if (response.ok) {
-          const data = await response.json();
-          setEvents(data.events || []);
-          
-          // Calculate stats
-          const totalEvents = data.events.length;
-          const totalAttendees = data.events.reduce((sum: number, event: Event) => sum + (event.attendee_count || 0), 0);
-          const totalRevenue = data.events.reduce((sum: number, event: Event) => sum + (event.price * (event.attendee_count || 0)), 0);
-          const upcomingEvents = data.events.filter((event: Event) => new Date(event.date) > new Date()).length;
-          
-          setStats({
-            totalEvents,
-            totalAttendees,
-            totalRevenue,
-            upcomingEvents
-          });
-        }
+        // Transform the data to match the expected format
+        const transformedEvents = userEvents.map((event: any) => ({
+          id: event.id,
+          title: event.title,
+          description: event.description,
+          date: new Date(event.date).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          }),
+          time: new Date(event.date).toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+          }),
+          location: event.location,
+          category: event.category,
+          attendee_count: event.rsvp_count,
+          max_attendees: 100,
+          image: generateEventThumbnail(event.title, event.category),
+          price: 0,
+          currency: 'USD',
+          is_online: false,
+          is_public: true,
+          requires_approval: false,
+          created_at: event.created_at,
+          updated_at: event.updated_at,
+          creator_id: event.creator_id
+        }));
+        
+        setEvents(transformedEvents);
+        
+        // Calculate stats
+        const totalEvents = transformedEvents.length;
+        const totalAttendees = transformedEvents.reduce((sum: number, event: Event) => sum + (event.attendee_count || 0), 0);
+        const totalRevenue = transformedEvents.reduce((sum: number, event: Event) => sum + (event.price * (event.attendee_count || 0)), 0);
+        const upcomingEvents = transformedEvents.filter((event: Event) => new Date(event.date) > new Date()).length;
+        
+        setStats({
+          totalEvents,
+          totalAttendees,
+          totalRevenue,
+          upcomingEvents
+        });
       } catch (error) {
         console.error('Error fetching events:', error);
       } finally {

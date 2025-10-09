@@ -1,7 +1,7 @@
 {
-  "name": "eventflow",
+  "name": "venu",
   "version": "1.0.0",
-  "description": "A beautiful event management web application inspired by Luma",
+  "description": "Venu - Event Management Platform",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,14 +9,11 @@
     "start": "next start",
     "export": "next export",
     "lint": "next lint",
-    "test": "echo \"Tests will be added with Playwright or Cypress\" && exit 0",
-    "db:generate": "drizzle-kit generate",
-    "db:studio": "drizzle-kit studio"
+    "test": "echo \"Tests will be added with Playwright or Cypress\" && exit 0"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
     "@hookform/resolvers": "^3.9.0",
-    "@neondatabase/serverless": "^1.0.1",
     "@next/swc-wasm-nodejs": "13.5.1",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
@@ -45,26 +42,20 @@
     "@radix-ui/react-toggle": "^1.1.0",
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
-    "@types/bcryptjs": "^2.4.6",
-    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "20.6.2",
     "@types/qrcode": "^1.5.5",
     "@types/react": "18.2.22",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
-    "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
-    "dotenv": "^17.2.2",
-    "drizzle-orm": "^0.44.5",
     "embla-carousel-react": "^8.3.0",
     "eslint": "8.49.0",
     "eslint-config-next": "13.5.1",
     "framer-motion": "^10.16.16",
     "input-otp": "^1.2.4",
-    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.446.0",
     "next": "13.5.1",
     "next-themes": "^0.3.0",
@@ -92,12 +83,12 @@
     "nextjs",
     "typescript",
     "tailwind",
-    "event-management"
+    "event-management",
+    "frontend"
   ],
   "author": "EventFlow Team",
   "license": "MIT",
   "devDependencies": {
-    "drizzle-kit": "^0.31.4",
     "tsx": "^4.20.5"
   }
 }

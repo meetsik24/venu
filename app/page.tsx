@@ -1,41 +1,51 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Header from '@/src/components/Header';
-import { Hero } from '@/src/components/Hero';
-import { EventGrid } from '@/src/components/EventGrid';
-import { Footer } from '@/src/components/Footer';
+import Header from '@/components/features/Header';
+import { Hero } from '@/components/features/Hero';
+import { EventGrid } from '@/components/features/EventGrid';
+import { Footer } from '@/components/features/Footer';
 import { generateEventThumbnail } from '@/lib/eventImages';
+import { apiClient } from '@/lib/api/client';
 
 export default function HomePage() {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const response = await fetch('/api/events');
-        if (response.ok) {
-          const data = await response.json();
-          // Transform the data to match the expected format
-          const transformedEvents = data.events.map((event: any) => ({
-            id: event.id,
-            title: event.title,
-            description: event.description,
-            date: new Date(event.date).toLocaleDateString('en-US', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            }),
-            time: event.time,
-            location: event.location,
-            attendees: parseInt(event.attendee_count) || 0,
-            maxAttendees: event.max_attendees,
-            image: event.image || generateEventThumbnail(event.title, event.category),
-            category: event.category
-          }));
-          setEvents(transformedEvents);
-        }
+        const data = await apiClient.getEvents();
+        // Transform the data to match the expected format
+        const transformedEvents = data.events.map((event: any) => ({
+          id: event.id,
+          title: event.title,
+          description: event.description,
+          date: new Date(event.date).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          }),
+          time: new Date(event.date).toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+          }),
+          location: event.location,
+          category: event.category,
+          image: generateEventThumbnail(event.title, event.category),
+          maxAttendees: 100,
+          isOnline: false,
+          isPublic: true,
+          requiresApproval: false,
+          price: 0,
+          currency: 'USD',
+          organizer: {
+            id: event.creator_id,
+            name: 'Event Organizer',
+            email: 'organizer@example.com'
+          }
+        }));
+        setEvents(transformedEvents as Event[ ] );
       } catch (error) {
         console.error('Failed to fetch events:', error);
       } finally {
