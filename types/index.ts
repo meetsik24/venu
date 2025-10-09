@@ -8,7 +8,8 @@ export interface User {
   created_at: string;
 }
 
-export interface Event {
+// API Event type (matches backend)
+export interface ApiEvent {
   id: string;
   title: string;
   description?: string;
@@ -19,6 +20,30 @@ export interface Event {
   created_at: string;
   updated_at: string;
   rsvp_count: number;
+}
+
+// Frontend Event type (for UI components)
+export interface Event {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  category?: string;
+  image: string;
+  maxAttendees: number;
+  attendees?: number;
+  isOnline: boolean;
+  isPublic: boolean;
+  requiresApproval: boolean;
+  price: number;
+  currency: string;
+  organizer: {
+    id: string;
+    name: string;
+    email: string;
+  };
 }
 
 export interface CreateEvent {

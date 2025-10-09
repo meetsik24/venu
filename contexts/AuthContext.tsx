@@ -61,11 +61,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (name: string, email: string, password: string): Promise<boolean> => {
     try {
       const data = await apiClient.register(email, password, name);
-      localStorage.setItem('auth_token', data.access_token);
+      localStorage.setItem('auth_token', data.token.access_token);
       
-      // Fetch user data after successful registration
-      const userData = await apiClient.getCurrentUser();
-      setUser(userData);
+      // Set user data from registration response
+      setUser(data.user);
       return true;
     } catch (error) {
       console.error('Registration failed:', error);

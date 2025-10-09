@@ -7,9 +7,10 @@ import { EventGrid } from '@/components/features/EventGrid';
 import { Footer } from '@/components/features/Footer';
 import { generateEventThumbnail } from '@/lib/eventImages';
 import { apiClient } from '@/lib/api/client';
+import { Event } from '@/types';
 
 export default function HomePage() {
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,10 +18,10 @@ export default function HomePage() {
       try {
         const data = await apiClient.getEvents();
         // Transform the data to match the expected format
-        const transformedEvents = data.events.map((event: any) => ({
+        const transformedEvents: Event[] = data.events.map((event: any) => ({
           id: event.id,
           title: event.title,
-          description: event.description,
+          description: event.description || 'No description available',
           date: new Date(event.date).toLocaleDateString('en-US', { 
             year: 'numeric', 
             month: 'long', 
@@ -34,6 +35,7 @@ export default function HomePage() {
           category: event.category,
           image: generateEventThumbnail(event.title, event.category),
           maxAttendees: 100,
+          attendees: event.rsvp_count || 0,
           isOnline: false,
           isPublic: true,
           requiresApproval: false,
@@ -45,7 +47,7 @@ export default function HomePage() {
             email: 'organizer@example.com'
           }
         }));
-        setEvents(transformedEvents as Event[ ] );
+        setEvents(transformedEvents);
       } catch (error) {
         console.error('Failed to fetch events:', error);
       } finally {

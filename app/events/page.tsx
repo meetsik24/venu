@@ -93,7 +93,7 @@ export default function EventsPage() {
   }).map(event => ({
     id: event.id,
     title: event.title,
-    description: event.description,
+    description: event.description || 'No description available',
     date: new Date(event.date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -101,10 +101,20 @@ export default function EventsPage() {
     }),
     time: event.time,
     location: event.location,
+    category: event.category,
+    image: event.image || generateEventThumbnail(event.title, event.category),
+    maxAttendees: event.max_attendees || 100,
     attendees: event.attendee_count || 0,
-    maxAttendees: event.max_attendees,
-    image: event.image,
-    category: event.category
+    isOnline: false,
+    isPublic: true,
+    requiresApproval: false,
+    price: 0,
+    currency: 'USD',
+    organizer: {
+      id: event.creator_id,
+      name: 'Event Organizer',
+      email: 'organizer@example.com'
+    }
   }));
 
   return (

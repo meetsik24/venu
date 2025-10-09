@@ -3,19 +3,7 @@
 import { EventCard } from './EventCard';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  location: string;
-  attendees: number;
-  maxAttendees?: number;
-  image?: string;
-  category: string;
-}
+import { Event } from '@/types';
 
 interface EventGridProps {
   events: Event[];
