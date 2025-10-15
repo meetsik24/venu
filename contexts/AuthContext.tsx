@@ -45,8 +45,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      const data = await apiClient.login(email, password);
-      localStorage.setItem('auth_token', data.access_token);
+      const data: any = await apiClient.login(email, password);
+      const token: string | undefined = data?.access_token || data?.token?.access_token || data?.data?.access_token;
+      if (!token || typeof token !== 'string') {
+        console.error('Login failed: Missing token in response');
+        return false;
+      }
+      // Basic JWT shape validation (three segments)
+      if (token.split('.').length !== 3) {
+        console.error('Login failed: Received malformed token');
+        return false;
+      }
+      localStorage.setItem('auth_token', token);
       
       // Fetch user data after successful login
       const userData = await apiClient.getCurrentUser();
@@ -54,6 +64,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return true;
     } catch (error) {
       console.error('Login failed:', error);
+      // Ensure no bad token lingers
+      localStorage.removeItem('auth_token');
       return false;
     }
   };
@@ -61,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (name: string, email: string, password: string): Promise<boolean> => {
     try {
       const data = await apiClient.register(email, password, name);
-      localStorage.setItem('auth_token', data.token.access_token);
+      localStorage.setItem('auth_token', data.access_token);
       
       // Set user data from registration response
       setUser(data.user);

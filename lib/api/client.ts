@@ -21,20 +21,42 @@ class ApiClient {
     const url = `${this.baseUrl}${endpoint}`;
     const token = localStorage.getItem('auth_token');
 
+    const defaultHeaders: Record<string, string> = {
+      Accept: 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+
+    // Only set Content-Type when caller hasn't provided it
+    const hasContentType = !!(options.headers as Record<string, string> | undefined)?.['Content-Type'];
+    if (!hasContentType && options.body !== undefined) {
+      defaultHeaders['Content-Type'] = 'application/json';
+    }
+
     const config: RequestInit = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
-        ...options.headers,
-      },
       ...options,
+      headers: {
+        ...defaultHeaders,
+        ...(options.headers || {}),
+      },
     };
 
     const response = await fetch(url, config);
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Network error' }));
-      throw new Error(error.error || 'Request failed');
+      const errorBody = await response.json().catch(() => null);
+      let message = 'Request failed';
+      if (errorBody) {
+        if (typeof errorBody.detail === 'string') {
+          message = errorBody.detail;
+        } else if (Array.isArray(errorBody.detail) && errorBody.detail.length > 0) {
+          message = errorBody.detail[0]?.msg || message;
+        } else if (typeof errorBody.error === 'string') {
+          message = errorBody.error;
+        } else if (typeof errorBody.message === 'string') {
+          message = errorBody.message;
+        }
+      }
+      throw new Error(message);
     }
 
     return response.json();
@@ -57,7 +79,7 @@ class ApiClient {
   }
 
   async register(email: string, password: string, name: string, phone?: string) {
-    return this.request<{ user: User; token: { access_token: string; token_type: string } }>(`/api/${API_VERSION}/auth/signup`, {
+    return this.request<{ user: User; access_token: string }>(`/api/${API_VERSION}/auth/signup`, {
       method: 'POST',
       body: JSON.stringify({ email, password, name, phone }),
     });
