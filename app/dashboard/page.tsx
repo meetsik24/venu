@@ -141,15 +141,7 @@ export default function DashboardPage() {
         label: 'Delete',
         onClick: async () => {
           try {
-            const token = localStorage.getItem('auth_token');
-            const response = await fetch(`/api/events/${eventId}`, {
-              method: 'DELETE',
-              headers: {
-                'Authorization': `Bearer ${token}`
-              }
-            });
-            
-            if (response.ok) {
+            await apiClient.deleteEvent(eventId);
               setEvents(events.filter(event => event.id !== eventId));
               setStats(prev => ({
                 ...prev,
@@ -161,9 +153,6 @@ export default function DashboardPage() {
                 title: 'Event Deleted',
                 message: 'The event has been successfully deleted.'
               });
-            } else {
-              throw new Error('Failed to delete event');
-            }
           } catch (error) {
             console.error('Error deleting event:', error);
             setNotification({
@@ -194,30 +183,16 @@ export default function DashboardPage() {
     if (!selectedEvent) return;
 
     try {
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch(`/api/events/${selectedEvent.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(updatedEvent)
+      const updated = await apiClient.updateEvent(selectedEvent.id, updatedEvent);
+      setEvents(events.map(event => 
+        event.id === selectedEvent.id ? { ...event, ...updated } : event
+      ));
+      setNotification({
+        isOpen: true,
+        type: 'success',
+        title: 'Event Updated',
+        message: 'The event has been successfully updated.'
       });
-
-      if (response.ok) {
-        const updated = await response.json();
-        setEvents(events.map(event => 
-          event.id === selectedEvent.id ? { ...event, ...updated.event } : event
-        ));
-        setNotification({
-          isOpen: true,
-          type: 'success',
-          title: 'Event Updated',
-          message: 'The event has been successfully updated.'
-        });
-      } else {
-        throw new Error('Failed to update event');
-      }
     } catch (error) {
       console.error('Error updating event:', error);
       setNotification({

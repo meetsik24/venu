@@ -1,11 +1,11 @@
 import { ApiEvent, User, RSVP, CreateEvent, CreateRSVP } from '@/types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+// Allow same-origin by default to work with Next.js rewrites (avoids CORS)
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION || 'v1';
 
-if (!API_BASE_URL) {
-  throw new Error('NEXT_PUBLIC_API_URL environment variable is required');
-}
+// When API_BASE_URL is empty string, requests will be same-origin and can be
+// proxied via Next.js rewrites. This avoids CORS during local development.
 
 class ApiClient {
   private baseUrl: string;
@@ -141,6 +141,16 @@ class ApiClient {
     return this.request<{ message: string; rsvp_id: string }>(`/api/${API_VERSION}/events/${eventId}/rsvp`, {
       method: 'POST',
     });
+  }
+
+  // Try to get attendees - this endpoint may not exist
+  async getEventAttendees(eventId: string) {
+    try {
+      return this.request<any[]>(`/api/${API_VERSION}/events/${eventId}/attendees`);
+    } catch (error) {
+      console.warn('No attendees endpoint available:', error);
+      return [];
+    }
   }
 
 }

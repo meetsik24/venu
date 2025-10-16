@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { apiClient } from '@/lib/api/client';
 import { X, Calendar, MapPin, Users, Clock } from 'lucide-react';
 
 interface RSVPModalProps {
@@ -26,31 +27,21 @@ export default function RSVPModal({ isOpen, onClose, event, eventUrl }: RSVPModa
     setLoading(true);
 
     try {
-      const response = await fetch(`/api/events/${event.id}/rsvp`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setSuccess(true);
-        setTimeout(() => {
-          onClose();
-          setSuccess(false);
-          setFormData({
-            name: '',
-            email: '',
-            phone: '',
-            notes: '',
-            ticketCount: 1
-          });
-        }, 2000);
-      } else {
-        const error = await response.json();
-        alert('Failed to RSVP: ' + error.error);
-      }
+      console.log('Submitting RSVP for event:', event.id);
+      const result = await apiClient.createRSVP(event.id);
+      console.log('RSVP successful:', result);
+      setSuccess(true);
+      setTimeout(() => {
+        onClose();
+        setSuccess(false);
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          notes: '',
+          ticketCount: 1
+        });
+      }, 2000);
     } catch (error) {
       console.error('Error submitting RSVP:', error);
       alert('Failed to RSVP. Please try again.');

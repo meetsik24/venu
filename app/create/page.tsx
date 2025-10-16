@@ -7,6 +7,7 @@ import { Calendar, MapPin, Users, Clock, Plus, Share2, CheckCircle, Copy, Image 
 import { useAuth } from '@/contexts/AuthContext';
 import NotificationModal from '@/components/features/NotificationModal';
 import { getCategoryImage } from '@/lib/eventImages';
+import { apiClient } from '@/lib/api/client';
 
 export default function CreateEventPage() {
   const router = useRouter();
@@ -61,30 +62,17 @@ export default function CreateEventPage() {
     if (!user) return;
     
     try {
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch('/api/events', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          ...formData,
-          creatorId: user.id,
-          maxAttendees: formData.maxAttendees ? parseInt(formData.maxAttendees) : null,
-          isOnline: formData.location.toLowerCase() === 'online',
-          isPublic: true,
-          requiresApproval: false,
-          price: 0,
-          currency: 'USD',
-          image: formData.imageUrl || null
-        }),
-      });
+      const payload = {
+        title: formData.title,
+        description: formData.description || undefined,
+        date: new Date(`${formData.date}T${formData.time}:00`).toISOString(),
+        location: formData.location,
+        category: formData.category || undefined,
+      };
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Event created successfully:', result);
-        setCreatedEvent(result.event);
+      const created = await apiClient.createEvent(payload as any);
+      console.log('Event created successfully:', created);
+      setCreatedEvent(created);
         setShowSuccess(true);
         // Reset form
         setFormData({
@@ -97,25 +85,15 @@ export default function CreateEventPage() {
           maxAttendees: '',
           imageUrl: ''
         });
-             } else {
-               const error = await response.json();
-               console.error('Error creating event:', error);
-               setNotification({
-                 isOpen: true,
-                 type: 'error',
-                 title: 'Creation Failed',
-                 message: 'Failed to create event: ' + error.error
-               });
-             }
-           } catch (error) {
-             console.error('Error creating event:', error);
-             setNotification({
-               isOpen: true,
-               type: 'error',
-               title: 'Creation Failed',
-               message: 'Failed to create event. Please try again.'
-             });
-           }
+    } catch (error: any) {
+      console.error('Error creating event:', error);
+      setNotification({
+        isOpen: true,
+        type: 'error',
+        title: 'Creation Failed',
+        message: 'Failed to create event: ' + (error?.message || 'Unknown error')
+      });
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

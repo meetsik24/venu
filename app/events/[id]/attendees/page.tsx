@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Users, Mail, Phone, Calendar, Download } from 'lucide-react';
+import { ArrowLeft, Users, Mail, Phone, Calendar, Download, RefreshCw } from 'lucide-react';
 import Header from '@/components/features/Header';
 import { Footer } from '@/components/features/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
+import { apiClient } from '@/lib/api/client';
 
 interface Attendee {
   id: string;
@@ -40,6 +41,7 @@ export default function EventAttendeesPage() {
   const [event, setEvent] = useState<Event | null>(null);
   const [attendees, setAttendees] = useState<Attendee[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -54,32 +56,25 @@ export default function EventAttendeesPage() {
 
     async function loadEventAndAttendees() {
       try {
-        const token = localStorage.getItem('auth_token');
-        
-        // Load event details
-        const eventResponse = await fetch(`/api/events/${eventId}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+        const e = await apiClient.getEvent(eventId);
+        setEvent({
+          id: e.id,
+          title: e.title,
+          date: e.date,
+          time: new Date(e.date).toLocaleTimeString(),
+          location: e.location,
+          category: e.category || '',
+          attendee_count: e.rsvp_count,
+          max_attendees: 100,
         });
-        
-        if (eventResponse.ok) {
-          const eventData = await eventResponse.json();
-          setEvent(eventData.event);
-        }
 
-        // Load attendees
-        const attendeesResponse = await fetch(`/api/events/${eventId}/rsvp`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        if (attendeesResponse.ok) {
-          const attendeesData = await attendeesResponse.json();
-          setAttendees(attendeesData.rsvps || []);
-        } else {
-          setError('Failed to load attendees');
+        // Try to fetch attendees (may not be available)
+        try {
+          const attendeesData = await apiClient.getEventAttendees(eventId);
+          setAttendees(attendeesData);
+        } catch (error) {
+          console.warn('Could not fetch attendees:', error);
+          setAttendees([]);
         }
       } catch (error) {
         console.error('Error loading data:', error);
@@ -91,6 +86,36 @@ export default function EventAttendeesPage() {
 
     loadEventAndAttendees();
   }, [eventId, user]);
+
+  const refreshData = async () => {
+    setRefreshing(true);
+    try {
+      const e = await apiClient.getEvent(eventId);
+      setEvent({
+        id: e.id,
+        title: e.title,
+        date: e.date,
+        time: new Date(e.date).toLocaleTimeString(),
+        location: e.location,
+        category: e.category || '',
+        attendee_count: e.rsvp_count,
+        max_attendees: 100,
+      });
+
+      // Try to fetch attendees (may not be available)
+      try {
+        const attendeesData = await apiClient.getEventAttendees(eventId);
+        setAttendees(attendeesData);
+      } catch (error) {
+        console.warn('Could not fetch attendees:', error);
+        setAttendees([]);
+      }
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const exportAttendees = () => {
     const csvContent = [
@@ -196,12 +221,19 @@ export default function EventAttendeesPage() {
             <h2 className="text-xl font-semibold">Attendee List</h2>
             <p className="text-muted-foreground">
               {attendees.length} people have RSVP'd for this event
+              {event && ` (Total RSVPs: ${event.attendee_count})`}
             </p>
           </div>
-          <Button onClick={exportAttendees} disabled={attendees.length === 0}>
-            <Download className="w-4 h-4 mr-2" />
-            Export CSV
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={refreshData} disabled={refreshing} variant="outline">
+              <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+            <Button onClick={exportAttendees} disabled={attendees.length === 0}>
+              <Download className="w-4 h-4 mr-2" />
+              Export CSV
+            </Button>
+          </div>
         </div>
 
         {/* Attendees List */}

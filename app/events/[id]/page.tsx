@@ -8,6 +8,7 @@ import Header from '@/components/features/Header';
 import { Footer } from '@/components/features/Footer';
 import RSVPModal from '@/components/features/RSVPModal';
 import { generateEventThumbnail } from '@/lib/eventImages';
+import { apiClient } from '@/lib/api/client';
 
 export default function EventDetailPage() {
   const params = useParams();
@@ -21,23 +22,11 @@ export default function EventDetailPage() {
   useEffect(() => {
     async function loadEvent() {
       try {
-        // Always try to get from the events list API first
-        const eventsResponse = await fetch('/api/events');
-        if (eventsResponse.ok) {
-          const eventsData = await eventsResponse.json();
-          const foundEvent = eventsData.events.find((e: any) => e.id === id);
-          if (foundEvent) {
-            setEvent(foundEvent);
-            setLoading(false);
-            return;
-          }
-        }
-        
-        // If not found, show error
-        setError('Event not found');
+        const e = await apiClient.getEvent(id);
+        setEvent(e);
       } catch (error) {
         console.error('Failed to load event:', error);
-        setError('Failed to load event');
+        setError('Event not found');
       } finally {
         setLoading(false);
       }

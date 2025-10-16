@@ -10,6 +10,16 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  async rewrites() {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://venu-engine.onrender.com';
+    const apiVersion = process.env.NEXT_PUBLIC_API_VERSION || 'v1';
+    return [
+      {
+        source: `/api/${apiVersion}/:path*`,
+        destination: `${apiBase}/api/${apiVersion}/:path*`,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
